@@ -4,15 +4,38 @@
     <meta charset="utf-8" />
     <title>ASP.NET Core SignalR</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css"/>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
 </head>
 <body>
-    <div id="divMessages" class="messages">
-	<ul id="discussion"></ul>
+<div class="container">
+    <main role="main" class="pb-3">
+
+<div class="maincounter-wrap" style="margin-top:15px">
+    <h1>Corona virus Cases:</h1>
+    <div class="maincounter-number">
+        <span style="color:#aaa"> </span>
+
     </div>
+</div>
+<div class="maincounter-wrap" style="margin-top:15px">
+    <h1>Deaths:</h1>
+    <div class="maincounter-number">
+        <span></span>
+    </div>
+</div>
+
+<div class="maincounter-wrap" style="margin-top:15px;">
+    <h1>Recovered:</h1>
+    <div class="maincounter-number text-success">
+        <span></span>
+    </div>
+</div>
+<h3 id="countries">Confirmed Cases and Deaths by Country, Territory, or Conveyance</h3>
+<p>The <strong>coronavirus</strong> COVID-19 is affecting
+    <strong>196 countries and territories</strong> around the world and <strong>1 international conveyance</strong> (the<em> Diamond Princess </em>cruise ship harbored in Yokohama, Japan). <strong>The day is reset after midnight GMT+0</strong>.<br>
+    <br>
+</p>
+
 	    <table id="main_table_countries_today" class="table table-bordered table-hover table-sm" style="width:100%">
         <thead class="thead-light">
             <tr>
@@ -31,10 +54,7 @@
         <tbody>
 		<tbody>
 		</table>
-    <div class="input-zone">
-        <label id="lblMessage" for="tbMessage">Message:</label>
-        <input id="tbMessage" class="input-zone-input" type="text" />
-        <button id="btnSend">Send</button>
-    </div>
+    </main>
+</div>
 </body>
 </html>

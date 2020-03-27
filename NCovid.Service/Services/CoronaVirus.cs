@@ -8,6 +8,8 @@
     using AngleSharp;
     using AngleSharp.Dom;
     using DataContext;
+    using Hubs;
+    using Microsoft.AspNetCore.SignalR;
     using Microsoft.EntityFrameworkCore;
 
     public class CoronaVirusService : ICoronaVirusService
@@ -15,18 +17,24 @@
         private const string BaseUrl = "https://www.worldometers.info/coronavirus/";
 
         private const string MainCounterSelector = ".maincounter-number";
-        private readonly CoronaDbContext _dbContext;
-        //private readonly IHubContext<CoronaHub> _hubContext;
+        // private readonly CoronaDbContext _dbContext;
+        private readonly IHubContext<CoronaHub> _hubContext;
 
-        public CoronaVirusService(CoronaDbContext dbContext)
+        public CoronaVirusService(IHubContext<CoronaHub> hubContext)
         {
-            _dbContext = dbContext;
-            //_hubContext = hubContext;
+            _hubContext = hubContext;
         }
+
+        //public CoronaVirusService()
+        //{
+        //   // _dbContext = dbContext;
+        //    //_hubContext = hubContext;
+        //}
 
         public async Task<AllResults> GetAllData()
         {
-            return await _dbContext.All.Select(a => new AllResults
+            await using CoronaDbContext dbContext = new CoronaDbContext();
+            return await dbContext.All.Select(a => new AllResults
             {
                 Cases = a.Cases,
                 Deaths = a.Deaths,
@@ -36,7 +44,8 @@
 
         public async Task<List<CountryResult>> GetCountriesData()
         {
-            return await _dbContext.Countries.Select(c => new CountryResult
+            await using CoronaDbContext dbContext = new CoronaDbContext();
+            return await dbContext.Countries.Select(c => new CountryResult
             {
                 Active = c.Active,
                 Cases = c.Cases,
@@ -52,7 +61,8 @@
         }
         public async Task<List<CountryResult>> GetCountriesData(string search)
         {
-            return await _dbContext.Countries.Where(c=>c.Country.Contains(search)).Select(c => new CountryResult
+            await using CoronaDbContext dbContext = new CoronaDbContext();
+            return await dbContext.Countries.Where(c=>c.Country.Contains(search)).Select(c => new CountryResult
             {
                 Active = c.Active,
                 Cases = c.Cases,
@@ -64,24 +74,26 @@
                 DeathsPerOneMillion = c.DeathsPerOneMillion,
                 TodayCases = c.TodayCases,
                 TodayDeaths = c.TodayDeaths
-            }).ToListAsync();
+            }).OrderBy(o=>o.Cases).ToListAsync();
         }
         public async void SaveInfo()
         {
+
             await RecurringTask(async () =>
             {
-                _dbContext.Database.ExecuteSqlRaw("DELETE FROM Country");
-                _dbContext.Database.ExecuteSqlRaw("DELETE FROM GlobalInfo");
+                await using CoronaDbContext dbContext = new CoronaDbContext();
+                dbContext.Database.ExecuteSqlRaw("DELETE FROM Country");
+                dbContext.Database.ExecuteSqlRaw("DELETE FROM GlobalInfo");
                 var allData = await SaveAll();
 
-                await _dbContext.All.AddAsync(new GlobalInfo
+                await dbContext.All.AddAsync(new GlobalInfo
                 {
                     Cases = allData.Cases,
                     Deaths = allData.Deaths,
                     Recovered = allData.Recovered
                 });
-               
-                await _dbContext.Countries.AddRangeAsync((await SaveCountriesData()).Select(c => new Countries
+
+                await dbContext.Countries.AddRangeAsync((await SaveCountriesData()).Select(c => new Countries
                 {
                     Active = c.Active,
                     Cases = c.Cases,
@@ -94,9 +106,12 @@
                     TodayCases = c.TodayCases,
                     TodayDeaths = c.TodayDeaths
                 }));
-                await _dbContext.SaveChangesAsync();
-
-            }, 120, CancellationToken.None).ConfigureAwait(false);
+                await dbContext.SaveChangesAsync();
+                var all = await GetAllData();
+                await _hubContext.Clients.All.SendAsync("getAll", all).ConfigureAwait(false);
+                var countries = await GetCountriesData();
+                await _hubContext.Clients.All.SendAsync("getCountries", countries).ConfigureAwait(false);
+            }, 120, CancellationToken.None);
         }
 
         private static async Task<AllResults> SaveAll()
@@ -188,10 +203,9 @@
                 while (!token.IsCancellationRequested)
                 {
                     action();
-                        
+                  
                     await Task.Delay(TimeSpan.FromSeconds(seconds), token);
-                    //await _hubContext.Clients.All.SendAsync("getAll", GetAllData()).ConfigureAwait(false);
-                    //await _hubContext.Clients.All.SendAsync("getCountries", GetCountriesData()).ConfigureAwait(false);
+
                 }
             }, token);
         }

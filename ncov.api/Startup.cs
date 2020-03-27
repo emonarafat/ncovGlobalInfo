@@ -74,7 +74,7 @@ namespace ncov.api
         /// <param name="services">The services<see cref="IServiceCollection"/>.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CoronaDbContext>();
+            services.AddDbContext<CoronaDbContext>(ServiceLifetime.Transient);
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
