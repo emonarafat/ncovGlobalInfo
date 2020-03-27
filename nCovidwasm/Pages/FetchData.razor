@@ -1,0 +1,65 @@
+﻿@page "/fetchdata"
+@using ncovid.Service
+
+@inject HttpClient Http
+@inject ApiService app;
+    <h1>Confirmed Cases and Deaths by Country, Territory, or Conveyance</h1>
+
+    <p>The corona virus COVID-19 is affecting 197 countries and territories around the world and 1 international conveyance (the Diamond Princess cruise ship harbored in Yokohama, Japan). The day is reset after midnight GMT+0.</p>
+
+@if (_coronaResults == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Country,<br>Other</th>
+               <th scope="col">Total<br>Cases</th>
+               <th scope="col">New<br>Cases</th>
+               <th scope="col">Total<br>Deaths</th>
+               <th scope="col">New<br>Deaths</th>
+
+               <th scope="col">Total<br>Recovered</th>
+               <th scope="col">Active<br>Cases</th>
+               <th scope="col">Serious,<br>Critical</th>
+               <th scope="col">Tot&nbsp;Cases/<br>1M pop</th>
+               <th scope="col">Tot&nbsp;Deaths/<br>1M pop</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var result in _coronaResults)
+            {
+                <tr>
+                <td class="text-left">@result.Country</td>
+                <td class="text-right">@result.Cases</td>
+                <td class="table-info text-right">@result.TodayCases</td>
+                <td class="text-right">@result.Deaths</td>
+                <td class="table-danger text-right">@result.TodayDeaths</td>
+                <td class="text-right">@result.Recovered</td>
+                <td class="text-right">@result.Active</td>
+                <td class="text-right">@result.Critical</td>
+                <td class="text-right">@result.CasesPerOneMillion</td>
+                <td  class="text-right">@result.DeathsPerOneMillion</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<CountryResult> _coronaResults;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //var httpresult =await Http.GetStringAsync("https://localhost:44357/api/corona/countries");
+        //var options = new JsonSerializerOptions
+        //{
+        //    PropertyNameCaseInsensitive = true,
+        //};
+        //_coronaResults= JsonSerializer.Deserialize<List<CountryResult>>(httpresult, options);
+        _coronaResults = await app.GetCountries();
+    }
+}

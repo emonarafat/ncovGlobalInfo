@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>ASP.NET Core SignalR</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+</head>
+<body>
+    <div id="divMessages" class="messages">
+	<ul id="discussion"></ul>
+    </div>
+	    <table id="main_table_countries_today" class="table table-bordered table-hover table-sm" style="width:100%">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Country,<br>Other</th>
+                <th scope="col">Total<br>Cases</th>
+                <th scope="col">New<br>Cases</th>
+                <th scope="col">Total<br>Deaths</th>
+                <th scope="col">New<br>Deaths</th>
+                <th scope="col">Total<br>Recovered</th>
+                <th scope="col">Active<br>Cases</th>
+                <th scope="col">Serious,<br>Critical</th>
+                <th scope="col">Tot&nbsp;Cases/<br>1M pop</th>
+                <th scope="col">Tot&nbsp;Deaths/<br>1M pop</th>
+            </tr>
+        </thead>
+        <tbody>
+		<tbody>
+		</table>
+    <div class="input-zone">
+        <label id="lblMessage" for="tbMessage">Message:</label>
+        <input id="tbMessage" class="input-zone-input" type="text" />
+        <button id="btnSend">Send</button>
+    </div>
+</body>
+</html>
