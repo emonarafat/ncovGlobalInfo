@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Profile = AutoMapper.Profile;
-
-namespace NCovid.Service.AutoMapper
+﻿namespace NCovid.Service.Mapper
 {
     using AutoMapper;
     using DataContext;
@@ -14,7 +9,6 @@ namespace NCovid.Service.AutoMapper
         {
             CreateMap<GlobalInfo, AllResults>().ReverseMap();
             CreateMap<Countries, CountryResult>().ReverseMap();
-          
         }
     }
 }

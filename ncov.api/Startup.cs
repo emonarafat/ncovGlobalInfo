@@ -1,34 +1,45 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using NCovid.Service.DataContext;
+using NCovid.Service.Hubs;
+using NCovid.Service.Mapper;
+using NCovid.Service.Services;
+
 namespace ncov.api
 {
-    using AutoMapper;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Net.Http.Headers;
-    using Microsoft.OpenApi.Models;
-    using NCovid.Service.AutoMapper;
-    using NCovid.Service.DataContext;
-    using NCovid.Service.Hubs;
-    using NCovid.Service.Services;
-
-
     /// <summary>
     /// Defines the <see cref="Startup" />.
     /// </summary>
     public class Startup
     {
-     
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Startup"/> class.
-        /// </summary>
-        /// <param name="configuration">The configuration<see cref="IConfiguration"/>.</param>
-        public Startup(IConfiguration configuration)
+        public Startup(IWebHostEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true)
+                .AddEnvironmentVariables();
+
+            Env = env;
+            Configuration = builder.Build();
         }
+
+        public IWebHostEnvironment Env { get; }
+
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="Startup"/> class.
+        ///// </summary>
+        ///// <param name="configuration">The configuration<see cref="IConfiguration"/>.</param>
+        //public Startup(IConfiguration configuration)
+        //{
+        //    Configuration = configuration;
+        //}
 
         /// <summary>
         /// Gets the Configuration.
@@ -40,7 +51,7 @@ namespace ncov.api
         /// </summary>
         /// <param name="app">The app<see cref="IApplicationBuilder"/>.</param>
         /// <param name="env">The env<see cref="IWebHostEnvironment"/>.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, CoronaDbContext dbContext)
         {
             if (env.IsDevelopment())
             {
@@ -48,7 +59,7 @@ namespace ncov.api
             }
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-
+            dbContext.Database.EnsureCreated();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
@@ -56,6 +67,7 @@ namespace ncov.api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Covid Info API V1");
                 c.RoutePrefix = string.Empty;
             });
+            app.UseStaticFiles();
             app.UseCors("AnotherPolicy");
             app.UseHttpsRedirection();
 
@@ -76,7 +88,7 @@ namespace ncov.api
         /// <param name="services">The services<see cref="IServiceCollection"/>.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CoronaDbContext>(ServiceLifetime.Transient);
+            services.AddDbContext<CoronaDbContext>(options =>options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;

@@ -6,7 +6,7 @@ using AutoMapper;
 namespace ncovid
 {
     using System.Net.Http;
-    using NCovid.Service.AutoMapper;
+    using NCovid.Service.Mapper;
     using Service;
 
     public class Program

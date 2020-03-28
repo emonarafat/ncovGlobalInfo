@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyVersion>1.0.58.58</AssemblyVersion>
-    <FileVersion>1.0.58.58</FileVersion>
+    <AssemblyVersion>1.0.81.81</AssemblyVersion>
+    <FileVersion>1.0.81.81</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +19,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NCovid.Service\NCovid.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DB\covid.sqlite3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 
