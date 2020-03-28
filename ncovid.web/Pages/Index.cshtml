@@ -1,5 +1,5 @@
 ﻿@page
-@using ncovid.web.Services
+
 @model IndexModel
 @{
     ViewData["Title"] = $"Corona virus Update (Live): {Model.AllResults.Cases:D} Cases and {Model.AllResults.Deaths:D} Deaths from COVID-19 Virus Outbreak ";
@@ -25,7 +25,7 @@
     </div>
 </div>
 <h3 id="countries">Confirmed Cases and Deaths by Country, Territory, or Conveyance</h3>
-<p>The <strong>coronavirus</strong> COVID-19 is affecting
+<p>The <strong>corona virus</strong> COVID-19 is affecting
     <strong>196 countries and territories</strong> around the world and <strong>1 international conveyance</strong> (the<em> Diamond Princess </em>cruise ship harbored in Yokohama, Japan). <strong>The day is reset after midnight GMT+0</strong>.<br>
     <br>
 </p>
@@ -49,23 +49,25 @@ else
                 <th scope="col">Serious,<br>Critical</th>
                 <th scope="col">Tot&nbsp;Cases/<br>1M pop</th>
                 <th scope="col">Tot&nbsp;Deaths/<br>1M pop</th>
+                <th scope="col">1<sup>st</sup><br>case</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var result in Model.Countries)
             {
-                <tr>
-                    <td class="text-left font-weight-bold">@result.Country</td>
-                    <td class="text-right font-weight-bold">@(result.Cases==0?"":$"{result.Cases:N0}")</td>
-                    <td class="@(result.TodayCases==0?"table-light":"bg-warning") text-right font-weight-bold">@(result.TodayCases==0?"":$"+{result.TodayCases:n0}")</td>
-                    <td class="text-right font-weight-bold">@(result.Deaths==0?"":$"{result.Deaths:n0}")</td>
-                    <td class="@(result.TodayDeaths==0?"table-light":"bg-danger text-light") text-right font-weight-bold">@(result.TodayDeaths==0?"":$"+{result.TodayDeaths:n0}")</td>
-                    <td class="text-right font-weight-bold"> @(result.Recovered==0?"":$"{result.Recovered:n0}")</td>
-                    <td class="text-right font-weight-bold">@(result.Active==0?"":$"{result.Active:n0}")</td>
-                    <td class="text-right font-weight-bold">@(result.Critical==0?"":$"{result.Critical:n0}")</td>
-                    <td class="text-right font-weight-bold">@(result.CasesPerOneMillion==0?"":$"{result.CasesPerOneMillion}")</td>
-                    <td class="text-right font-weight-bold">@(result.DeathsPerOneMillion==0?"":$"{result.DeathsPerOneMillion}")</td>
-                </tr>
+            <tr>
+                <td class="text-left font-weight-bold">@result.Country</td>
+                <td class="text-right font-weight-bold">@(result.Cases==0?"":$"{result.Cases:N0}")</td>
+                <td class="@(result.TodayCases==0?"table-light":"bg-warning") text-right font-weight-bold">@(result.TodayCases==0?"":$"+{result.TodayCases:n0}")</td>
+                <td class="text-right font-weight-bold">@(result.Deaths==0?"":$"{result.Deaths:n0}")</td>
+                <td class="@(result.TodayDeaths==0?"table-light":"bg-danger text-light") text-right font-weight-bold">@(result.TodayDeaths==0?"":$"+{result.TodayDeaths:n0}")</td>
+                <td class="text-right font-weight-bold"> @(result.Recovered==0?"":$"{result.Recovered:n0}")</td>
+                <td class="text-right font-weight-bold">@(result.Active==0?"":$"{result.Active:n0}")</td>
+                <td class="text-right font-weight-bold">@(result.Critical==0?"":$"{result.Critical:n0}")</td>
+                <td class="text-right font-weight-bold">@(result.CasesPerOneMillion==0?"":$"{result.CasesPerOneMillion}")</td>
+                <td class="text-right font-weight-bold">@(result.DeathsPerOneMillion==0?"":$"{result.DeathsPerOneMillion}")</td>
+                <td class="text-left font-weight-bold">@result.FirstCase</td>
+            </tr>
             }
         </tbody>
     </table>
@@ -73,7 +75,7 @@ else
 @section Scripts{
     <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript" class="init">
+    <script type="text/javascript">
         $.extend( $.fn.dataTable.defaults, {
             responsive: true
         } );

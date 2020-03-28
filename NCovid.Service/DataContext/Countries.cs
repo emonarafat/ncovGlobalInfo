@@ -65,5 +65,7 @@
         ///     Gets or sets the TodayDeaths.
         /// </summary>
         public int TodayDeaths { get; set; }
+
+        public string FirstCase { get; set; }
     }
 }

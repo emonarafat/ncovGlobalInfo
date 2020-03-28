@@ -66,5 +66,7 @@
         /// </summary>
         [JsonPropertyName("todayDeaths")]
         public int TodayDeaths { get; set;}
+        [JsonPropertyName("firstCase")]
+        public string FirstCase { get; set; }
     }
 }

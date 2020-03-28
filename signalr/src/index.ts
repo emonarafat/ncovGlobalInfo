@@ -41,7 +41,9 @@ $("#main_table_countries_today").DataTable(
 			{ "data": "active" },
             { "data": "critical" },
             { "data": "casesPerOneMillion" },
-            { "data": "deathsPerOneMillion" }
+            { "data": "deathsPerOneMillion" },
+			{ "data": "firstCase" }
+			
         ]
 });
 });

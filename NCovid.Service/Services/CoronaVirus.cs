@@ -104,7 +104,8 @@
                     Critical = c.Critical,
                     DeathsPerOneMillion = c.DeathsPerOneMillion,
                     TodayCases = c.TodayCases,
-                    TodayDeaths = c.TodayDeaths
+                    TodayDeaths = c.TodayDeaths,
+                    FirstCase = c.FirstCase
                 }));
                 await dbContext.SaveChangesAsync();
                 var all = await GetAllData();
@@ -167,6 +168,7 @@
             var criticalColIndex = 7;
             var casesPerOneMillionColIndex = 8;
             var deathsPerOneMillionColIndex = 9;
+            var firstCaseColIndex = 10;
             result.AddRange(from row in countriesTableCells
                 let cells = row.QuerySelectorAll("td")
                 let country = GetCountry(countryColIndex, cells)
@@ -182,7 +184,8 @@
                     DeathsPerOneMillion = cells[deathsPerOneMillionColIndex].TextContent.ToDecimal(),
                     Recovered = cells[curedColIndex].TextContent.ToInt(),
                     TodayCases = cells[todayCasesColIndex].TextContent.ToInt(),
-                    TodayDeaths = cells[todayDeathsColIndex].TextContent.ToInt()
+                    TodayDeaths = cells[todayDeathsColIndex].TextContent.ToInt(),
+                    FirstCase = cells[firstCaseColIndex].TextContent
                 });
 
             return result;
