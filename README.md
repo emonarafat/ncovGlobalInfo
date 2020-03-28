@@ -1,6 +1,6 @@
 Global Covid-19 infection status information 
 ------
-C#  web scraper for from   [worldometers coronavirus](https://www.worldometers.info/coronavirus/ "worldometers coronavirus") 
+C#  web scraper for   [worldometers coronavirus](https://www.worldometers.info/coronavirus/ "worldometers coronavirus") 
 
 
 In this repository I have implemended
