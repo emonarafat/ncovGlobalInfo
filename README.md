@@ -12,3 +12,11 @@ In this repository I have implemended
 3. signalr realtime update  (asp net core signalr)
 
 4. asp net core razor pages  (net core 3.1)
+
+To make it work Open Package Manager Console> Select NCovid.Service Procet on Default project 
+Run Comand 
+
+```
+Update-Database
+
+You are all set......
