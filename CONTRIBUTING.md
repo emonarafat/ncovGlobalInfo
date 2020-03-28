@@ -1,4 +1,4 @@
-# Contributing to Open Source Guides
+# Contributing to nCov Global Info
 
 Thanks for checking out the Open Source Guides! We're excited to hear and learn from you. Your experiences will benefit others who read and use these guides.
 
