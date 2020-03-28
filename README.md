@@ -4,7 +4,11 @@ C#  web scraper for from https://www.worldometers.info/coronavirus/
 
 
 In this repository I have implemended
-⋅⋅* web api (net core 3.1)
-⋅⋅* blazorwebassembly
-⋅⋅* signalr realtime update  (asp net core signalr)
-⋅⋅* asp net core razor pages  (net core 3.1)
+
+1. web api (net core 3.1)
+
+2. blazorwebassembly
+
+3. signalr realtime update  (asp net core signalr)
+
+4. asp net core razor pages  (net core 3.1)
