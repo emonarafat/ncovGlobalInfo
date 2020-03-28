@@ -1,4 +1,3 @@
-# ncovGlobalInfo
 Global Covid-19 infection status information 
 ------
 C#  web scraper for from https://www.worldometers.info/coronavirus/
