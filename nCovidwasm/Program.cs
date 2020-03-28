@@ -1,13 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-
+using AutoMapper;
 namespace ncovid
 {
     using System.Net.Http;
+    using NCovid.Service.AutoMapper;
     using Service;
 
     public class Program
@@ -16,7 +15,7 @@ namespace ncovid
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
-
+            builder.Services.AddAutoMapper(typeof(AutoMapping));
             builder.Services.AddTransient<ApiService>(provider => new ApiService(new HttpClient()
                 {BaseAddress = new Uri("https://localhost:44357")}));
             builder.Services.AddBaseAddressHttpClient();

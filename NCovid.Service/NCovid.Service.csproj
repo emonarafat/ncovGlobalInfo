@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyVersion>1.0.38.38</AssemblyVersion>
-    <FileVersion>1.0.38.38</FileVersion>
+    <AssemblyVersion>1.0.43.43</AssemblyVersion>
+    <FileVersion>1.0.43.43</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.13.0" />
-    <PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" Version="1.0.1" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.3" />

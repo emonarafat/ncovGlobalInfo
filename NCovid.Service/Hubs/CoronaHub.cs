@@ -21,25 +21,24 @@
         {
             if (search.IsSet())
             {
-                var countries = await _coronaVirus.GetCountriesData(search);
-                await Clients.Caller.SendAsync("getCountries", countries);
+                await Clients.Caller.SendAsync("getCountries", await _coronaVirus.GetCountriesData(search));
             }
             else
             {
-                var countries = await _coronaVirus.GetCountriesData();
-                await Clients.Caller.SendAsync("getCountries", countries);
+                await Clients.Caller.SendAsync("getCountries", await _coronaVirus.GetCountriesData());
             }
         }
 
         public async Task GetAll()
         {
-            var all = await _coronaVirus.GetAllData();
-            await Clients.Caller.SendAsync("getAll", all);
+            await Clients.Caller.SendAsync("getAll", await _coronaVirus.GetAllData());
         }
 
         public override async Task OnConnectedAsync()
         {
             
+            await Clients.Caller.SendAsync("getAll", await _coronaVirus.GetAllData());
+            await Clients.Caller.SendAsync("getCountries", await _coronaVirus.GetCountriesData());
             await Groups.AddToGroupAsync(Context.ConnectionId, "Corona Users");
             await base.OnConnectedAsync();
         }

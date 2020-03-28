@@ -1,5 +1,6 @@
 namespace ncov.api
 {
+    using AutoMapper;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -8,6 +9,7 @@ namespace ncov.api
     using Microsoft.Extensions.Logging;
     using Microsoft.Net.Http.Headers;
     using Microsoft.OpenApi.Models;
+    using NCovid.Service.AutoMapper;
     using NCovid.Service.DataContext;
     using NCovid.Service.Hubs;
     using NCovid.Service.Services;
@@ -80,30 +82,31 @@ namespace ncov.api
                 hubOptions.EnableDetailedErrors = true;
                 //hubOptions.HandshakeTimeout = TimeSpan.FromSeconds(30);
             });
-                //.AddRedis(o =>
-                //{
-                //    o.ConnectionFactory = async writer =>
-                //    {
-                //        var config = new ConfigurationOptions
-                //        {
-                //            AbortOnConnectFail = false
-                //        };
+            //.AddRedis(o =>
+            //{
+            //    o.ConnectionFactory = async writer =>
+            //    {
+            //        var config = new ConfigurationOptions
+            //        {
+            //            AbortOnConnectFail = false
+            //        };
 
-                //        config.EndPoints.Add(Configuration.GetConnectionString("Redis"));
-                //        // config.SetDefaultPorts();
-                //        var connection = await ConnectionMultiplexer.ConnectAsync(config, writer).ConfigureAwait(false);
-                //        connection.ConnectionFailed +=
-                //            (_, e) =>
-                //            {
+            //        config.EndPoints.Add(Configuration.GetConnectionString("Redis"));
+            //        // config.SetDefaultPorts();
+            //        var connection = await ConnectionMultiplexer.ConnectAsync(config, writer).ConfigureAwait(false);
+            //        connection.ConnectionFailed +=
+            //            (_, e) =>
+            //            {
 
-                //            };//Logger.Error(e.Exception, "Connection to Redis failed."); }
+            //            };//Logger.Error(e.Exception, "Connection to Redis failed."); }
 
-                //       // if (!connection.IsConnected) //Logger.Info("Did not connect to Redis.");
+            //       // if (!connection.IsConnected) //Logger.Info("Did not connect to Redis.");
 
-                //        return connection;
-                //    };
-                //});
-            services.AddCors(options =>
+            //        return connection;
+            //    };
+            //});
+            services.AddAutoMapper(typeof(AutoMapping));
+        services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
                     builder =>
