@@ -12,6 +12,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using AutoMapper;
+    using System.Text.RegularExpressions;
 
 
     /// <summary>
@@ -33,7 +34,7 @@
         /// <summary>
         /// Defines the MainCounterSelector..
         /// </summary>
-        private const string MainCounterSelector = ".maincounter-number";
+        private const string MainCounterSelector = "maincounter-number";
 
         /// <summary>
         /// Defines the _hubContext..
@@ -50,12 +51,11 @@
         /// </summary>
         /// <param name="hubContext">The hubContext<see cref="IHubContext{CoronaHub}" />.</param>
         /// <param name="mapper">The mapper<see cref="IMapper" />.</param>
-        public CoronaVirusService(IHubContext<CoronaHub> hubContext, IMapper mapper, CoronaDbContext dbContext)
+        public CoronaVirusService(IHubContext<CoronaHub> hubContext, IMapper mapper)
         {
             _hubContext = hubContext;
             _mapper = mapper;
-            _dbContext = dbContext;
-            SaveInfo();
+            _dbContext = CoronaDbContext.GetContext();
         }
 
         /// <summary>
@@ -75,10 +75,18 @@
         /// <returns>List of Countries <see cref="List{CountryResult}" />.</returns>
         public async Task<List<CountryResult>> GetCountriesData()
         {
-          
-            var data = (await _dbContext.Countries.OrderBy(o => o.Cases)
-                .ToListAsync()).Select(c => _mapper.Map<CountryResult>(c)).ToList();
-            return data.Any() ? data :await ParseCountriesData();
+            CoronaInfo coronaInfo = await _dbContext.CoronaInfos?.OrderByDescending(o => o.UpdateDate).FirstOrDefaultAsync();
+            if (coronaInfo != null&&coronaInfo.Countries!=null)
+            {
+                var data = coronaInfo
+                    .Countries
+                    .OrderBy(o => o.Cases)
+                    .Select(c => _mapper.Map<CountryResult>(c));
+                //var data = (await _dbContext.CoronaInfos.Where(c => c.UpdateDate > DateTimeOffset.Now.Date.AddDays(-1)).SelectMany(s => s.Countries).OrderBy(o => o.Cases)
+                //    .ToListAsync()).Select(c => _mapper.Map<CountryResult>(c)).ToList();
+                return data.Any() ? data.ToList() : await ParseCountriesData();
+            }
+            return await ParseCountriesData();
         }
 
         /// <summary>
@@ -89,8 +97,15 @@
         public async Task<List<CountryResult>> GetCountriesData(string search)
         {
 
-            var data = (await _dbContext.Countries.Where(c => c.Country.Contains(search)).OrderBy(o => o.Cases)
-                .ToListAsync()).Select(c => _mapper.Map<CountryResult>(c)).ToList();
+            //var data = (await _dbContext.CoronaInfos.Where(c =>c.UpdateDate.Date==DateTimeOffset.Now.Date).SelectMany(s=>s.Countries).Where(c=> c.Country.Contains(search)).OrderBy(o => o.Cases)
+            //    .ToListAsync()).Select(c => _mapper.Map<CountryResult>(c)).ToList();
+
+            var data = (await _dbContext.CoronaInfos.OrderByDescending(o => o.UpdateDate).FirstOrDefaultAsync())
+                .Countries
+                .Where(c => c.Country.Contains(search))
+                .OrderBy(o => o.Cases)
+                .Select(c => _mapper.Map<CountryResult>(c))
+                .ToList();
             return data.Any() ? data : (await ParseCountriesData()).Where(c => c.Country.Contains(search)).OrderBy(o => o.Cases).ToList();
         }
 
@@ -122,7 +137,10 @@
             const int criticalColIndex = 7;
             const int casesPerOneMillionColIndex = 8;
             const int deathsPerOneMillionColIndex = 9;
-            const int firstCaseColIndex = 10;
+           // const int firstCaseColIndex = 10;
+            const int totalTestColIndex = 10;
+            const int testPerOneMillionColIndex = 11;
+
             result.AddRange(countriesTableCells.Select(row => (row, cells: row.QuerySelectorAll("td")))
                 .Select(t => new {t, country = GetCountry(countryColIndex, t.cells)})
                 .Where(t => t.country != "Total:")
@@ -138,7 +156,9 @@
                     Recovered = t.t.cells[curedColIndex].TextContent.ToInt(),
                     TodayCases = t.t.cells[todayCasesColIndex].TextContent.ToInt(),
                     TodayDeaths = t.t.cells[todayDeathsColIndex].TextContent.ToInt(),
-                    FirstCase = t.t.cells[firstCaseColIndex]?.TextContent?.Trim()
+                   // FirstCase = t.t.cells[firstCaseColIndex]?.TextContent?.Trim(),
+                    TotalTest= t.t.cells[totalTestColIndex]?.TextContent?.ToInt(),
+                    TestPerOneMillion = t.t.cells[testPerOneMillionColIndex]?.TextContent?.ToInt()
                 }));
 
             return result;
@@ -163,17 +183,21 @@
         private static string GetCountry(int countryColIndex, IHtmlCollection<IElement> cells)
         {
             var country = cells[countryColIndex].TextContent;
-            return country.IsSet() ? country : cells[countryColIndex].QuerySelector("a")?.TextContent.Trim() ?? "";
+            return Cleanup(country.IsSet() ? country : cells[countryColIndex].QuerySelector("a")?.TextContent.Trim() ?? "");
         }
 
+        private static string Cleanup(string s)
+        {
+            return Regex.Replace(s, @"\t|\n|\r", "");
+        }
         /// <summary>
         /// The GlobalInfoSummery.
         /// </summary>
         /// <param name="document">The document<see cref="IParentNode"/>.</param>
         /// <returns>The <see cref="AllResults"/>.</returns>
-        private static AllResults GlobalInfoSummery(IParentNode document)
+        private static AllResults GlobalInfoSummery(IDocument document)
         {
-            var selectorAll = document.QuerySelectorAll(MainCounterSelector);
+            var selectorAll = document.GetElementsByClassName(MainCounterSelector);//  .QuerySelectorAll(".maincounter-number > span");
             var result = new AllResults();
             for (var i = 0; i < selectorAll.Length; i++)
             {
@@ -206,7 +230,7 @@
             var result = new List<CountryResult>();
             var document = await ReadDocument();
             var countriesTableCells = document.QuerySelectorAll("table#main_table_countries_today tbody tr");
-            //var totalColumns = 10;
+            //var totalColumns = 12;
             const int countryColIndex = 0;
             const int casesColIndex = 1;
             const int todayCasesColIndex = 2;
@@ -217,7 +241,9 @@
             const int criticalColIndex = 7;
             const int casesPerOneMillionColIndex = 8;
             const int deathsPerOneMillionColIndex = 9;
-            const int firstCaseColIndex = 10;
+            // const int firstCaseColIndex = 10;
+            const int totalTestColIndex = 10;
+            const int testPerOneMillionColIndex = 11;
             result.AddRange(countriesTableCells.Select(row => (row, cells: row.QuerySelectorAll("td")))
                 .Select(t => new {t, country = GetCountry(countryColIndex, t.cells)})
                 .Where(t => t.country != "Total:")
@@ -233,7 +259,9 @@
                     Recovered = t.t.cells[curedColIndex].TextContent.ToInt(),
                     TodayCases = t.t.cells[todayCasesColIndex].TextContent.ToInt(),
                     TodayDeaths = t.t.cells[todayDeathsColIndex].TextContent.ToInt(),
-                    FirstCase = t.t.cells[firstCaseColIndex]?.TextContent?.Trim()
+                   // FirstCase = t.t.cells[firstCaseColIndex]?.TextContent?.Trim(),
+                    TotalTest = t.t.cells[totalTestColIndex]?.TextContent?.ToInt(),
+                    TestPerOneMillion = t.t.cells[testPerOneMillionColIndex]?.TextContent?.ToInt()
                 }));
 
             return result;
@@ -252,9 +280,9 @@
         /// <returns>Summery Result <see cref="Task{AllResults}" />.</returns>
         private static async Task<AllResults> ParseGlobalInfoSummery()
         {
-            using var document =
-                await BrowsingContext.New(Configuration.Default.WithDefaultLoader()).OpenAsync(BaseUrl);
-            return GlobalInfoSummery(document);
+            //using var document =
+            //    await BrowsingContext.New(Configuration.Default.WithDefaultLoader()).OpenAsync(BaseUrl);
+            return GlobalInfoSummery(await ReadDocument());
         }
 
         /// <summary>
@@ -262,7 +290,7 @@
         /// </summary>
         /// <param name="document">The document<see cref="IParentNode"/>.</param>
         /// <returns>The <see cref="Task{AllResults}" />.</returns>
-        private static AllResults ParseGlobalInfoSummery(IParentNode document) => GlobalInfoSummery(document);
+        private static AllResults ParseGlobalInfoSummery(IDocument document) => GlobalInfoSummery(document);
 
         /// <summary>
         ///  Read Document.
@@ -296,15 +324,25 @@
         /// <returns>The <see cref="Task"/>.</returns>
         private async Task FetchSaveInformationToDatabase()
         {
+            //_dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE Config.Country");
+            using CoronaDbContext dbcontext = CoronaDbContext.GetContext();
 
-            _dbContext.Database.ExecuteSqlRaw("DELETE FROM Country");
-            _dbContext.Database.ExecuteSqlRaw("DELETE FROM GlobalInfo");
+            dbcontext.Database.ExecuteSqlRaw("TRUNCATE TABLE Config.GlobalInfo");
 
-            var (all, countries) = await GetAllInfo();
-            await _dbContext.All.AddAsync(_mapper.Map<GlobalInfo>(all));
+            (AllResults all, List<CountryResult> countries) = await GetAllInfo().ConfigureAwait(false);
 
-            await _dbContext.Countries.AddRangeAsync(countries.Select(c => _mapper.Map<Countries>(c)));
-            await _dbContext.SaveChangesAsync();
+            var mappedCountries = countries.Select(c => _mapper.Map<Countries>(c)).ToList();
+
+            await dbcontext.CoronaInfos.AddAsync(new CoronaInfo
+            {
+                Countries = mappedCountries,
+                UpdateDate = DateTimeOffset.UtcNow
+            });
+
+            await dbcontext.All.AddAsync(_mapper.Map<GlobalInfo>(all)).ConfigureAwait(false);
+
+            await dbcontext.SaveChangesAsync().ConfigureAwait(false);
+
             await SendToSignalRClient();
         }
 
@@ -312,6 +350,7 @@
         {
             // Send information to SignalR Hub Connections
             await _hubContext.Clients.All.SendAsync("getAll", await GetAllData()).ConfigureAwait(false);
+
             await _hubContext.Clients.All.SendAsync("getCountries", await GetCountriesData()).ConfigureAwait(false);
         }
     }

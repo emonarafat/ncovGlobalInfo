@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NCovid.Service.DataContext;
 
 namespace NCovid.Service.Migrations
 {
     [DbContext(typeof(CoronaDbContext))]
-    partial class CoronaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200410151527_Update Fields")]
+    partial class UpdateFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

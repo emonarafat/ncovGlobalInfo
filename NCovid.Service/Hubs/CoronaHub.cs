@@ -17,6 +17,7 @@
             _coronaVirus.SaveInfo();
         }
 
+
         public async Task GetCountries(string search = "")
         {
             if (search.IsSet())
@@ -36,7 +37,7 @@
 
         public override async Task OnConnectedAsync()
         {
-            
+
             await Clients.Caller.SendAsync("getAll", await _coronaVirus.GetAllData());
             await Clients.Caller.SendAsync("getCountries", await _coronaVirus.GetCountriesData());
             await Groups.AddToGroupAsync(Context.ConnectionId, "Corona Users");

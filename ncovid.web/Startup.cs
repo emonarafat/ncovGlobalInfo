@@ -35,7 +35,7 @@ namespace ncovid.web
             });
             services.AddHttpClient<Services.ApiService>(client =>
             {
-                client.BaseAddress = new Uri("https://covidapi.apical.tk");
+                client.BaseAddress = new Uri("https://localhost:44357");
             });
             services.AddRazorPages();
         }

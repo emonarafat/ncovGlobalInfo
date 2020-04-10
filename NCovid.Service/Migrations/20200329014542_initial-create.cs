@@ -2,7 +2,7 @@
 
 namespace NCovid.Service.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class initialcreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,7 @@ namespace NCovid.Service.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Active = table.Column<int>(nullable: false),
                     Cases = table.Column<int>(nullable: false),
                     CasesPerOneMillion = table.Column<decimal>(nullable: false),
@@ -25,7 +25,8 @@ namespace NCovid.Service.Migrations
                     DeathsPerOneMillion = table.Column<decimal>(nullable: false),
                     Recovered = table.Column<int>(nullable: false),
                     TodayCases = table.Column<int>(nullable: false),
-                    TodayDeaths = table.Column<int>(nullable: false)
+                    TodayDeaths = table.Column<int>(nullable: false),
+                    FirstCase = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -38,7 +39,7 @@ namespace NCovid.Service.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Cases = table.Column<int>(nullable: false),
                     Deaths = table.Column<int>(nullable: false),
                     Recovered = table.Column<int>(nullable: false)

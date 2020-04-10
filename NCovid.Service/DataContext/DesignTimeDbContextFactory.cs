@@ -15,13 +15,14 @@
         public CoronaDbContext CreateDbContext(string[] args)
         {
             var configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json").AddJsonFile(
+                .AddJsonFile("appsettings.json",optional:false,reloadOnChange:true).AddJsonFile(
                     "appsettings.development.json",
                     reloadOnChange: true,
                     optional: true).Build();
 
             var builder = new DbContextOptionsBuilder<CoronaDbContext>();
-            builder.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
+            //builder.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
+            builder.UseSqlServer(configuration.GetConnectionString("SqlConnection"));
             return new CoronaDbContext(builder.Options);
         }
     }

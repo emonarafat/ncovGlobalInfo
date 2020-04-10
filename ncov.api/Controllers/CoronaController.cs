@@ -42,14 +42,14 @@
         {
             return await _coronaVirusService.GetCountriesData();
         }
-        /// <summary>
-        /// The Get.
-        /// </summary>
-        /// <returns>The <see cref="IActionResult"/>.</returns>
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok();
-        }
+        ///// <summary>
+        ///// The Get.
+        ///// </summary>
+        ///// <returns>The <see cref="IActionResult"/>.</returns>
+        //[HttpGet]
+        //public IActionResult Get()
+        //{
+        //    return Ok();
+        //}
     }
 }

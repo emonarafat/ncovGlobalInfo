@@ -88,7 +88,8 @@ namespace ncov.api
         /// <param name="services">The services<see cref="IServiceCollection"/>.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CoronaDbContext>(options =>options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<CoronaDbContext>(options =>options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<CoronaDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
@@ -146,7 +147,7 @@ namespace ncov.api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Corona Virus Global Information", Version = "v1" });
             });
-            services.AddTransient<ICoronaVirusService, CoronaVirusService>();
+            services.AddSingleton<ICoronaVirusService, CoronaVirusService>();
         }
     }
 }

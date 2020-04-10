@@ -66,7 +66,14 @@
         /// </summary>
         [JsonPropertyName("todayDeaths")]
         public int TodayDeaths { get; set;}
-        [JsonPropertyName("firstCase")]
-        public string FirstCase { get; set; }
+
+        //[JsonPropertyName("firstCase")]
+        //public string FirstCase { get; set; }
+
+        [JsonPropertyName("totalTest")]
+        public int? TotalTest { get;  set; }
+
+        [JsonPropertyName("testPerOneMillion")]
+        public int? TestPerOneMillion { get;  set; }
     }
 }

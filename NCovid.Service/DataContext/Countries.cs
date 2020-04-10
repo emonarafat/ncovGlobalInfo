@@ -1,5 +1,6 @@
 ﻿namespace NCovid.Service.DataContext
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,7 +26,7 @@
         /// <summary>
         ///     Gets or sets the CasesPerOneMillion.
         /// </summary>
- 
+
         public decimal CasesPerOneMillion { get; set; }
 
         /// <summary>
@@ -67,5 +68,12 @@
         public int TodayDeaths { get; set; }
 
         public string FirstCase { get; set; }
+
+
+        public int? TotalTest { get; set; }
+
+        public int? TestPerOneMillion { get; set; }
+
+        public CoronaInfo CoronaInfo { get; set; }
     }
 }
