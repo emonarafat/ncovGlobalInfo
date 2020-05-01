@@ -125,7 +125,7 @@
         private static List<CountryResult> CountryResults(IParentNode document)
         {
             var result = new List<CountryResult>();
-            var countriesTableCells = document.QuerySelectorAll(CountriesTodayTbodyTr);
+            var countriesTableCells = document.QuerySelectorAll(CountriesTodayTbodyTr).Where(c=>!c.ClassList.Any(c=>c=="total_row_world")||!c.ClassList.Any(c=>c =="row_continent"));
             //var totalColumns = 10;
             const int countryColIndex = 0;
             const int casesColIndex = 1;

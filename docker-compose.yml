@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  ncovid.web:
+    image: ${DOCKER_REGISTRY-}ncovidweb
+    build:
+      context: .
+      dockerfile: ncovid.web/Dockerfile
+  ncov.api:
+    image: ${DOCKER_REGISTRY-}ncovapi
+    build:
+      context: .
+      dockerfile: ncov.api/Dockerfile
+

@@ -124,14 +124,14 @@ namespace ncov.api
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:44361", "http://localhost:61687", "https://covid.apical.tk", "http://localhost:8081");
+                        builder.WithOrigins("https://localhost:44361", "http://localhost:61687", "https://covid.apical.tk", "http://localhost:8081", "http://localhost:8080");
 
                     });
 
                 options.AddPolicy("AnotherPolicy",
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:44361", "http://localhost:61687", "https://covid.apical.tk", "http://localhost:8081")
+                        builder.WithOrigins("https://localhost:44361", "http://localhost:61687", "https://covid.apical.tk", "http://localhost:8081", "http://localhost:8080")
                                             .AllowAnyHeader()
                                             .AllowAnyMethod().AllowCredentials(); ;
                     });

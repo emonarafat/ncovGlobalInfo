@@ -7,17 +7,17 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["ncovid.web/ncovid.web.csproj", "ncovid.web/"]
+COPY ["ncov.api/ncov.api.csproj", "ncov.api/"]
 COPY ["NCovid.Service/NCovid.Service.csproj", "NCovid.Service/"]
-RUN dotnet restore "ncovid.web/ncovid.web.csproj"
+RUN dotnet restore "ncov.api/ncov.api.csproj"
 COPY . .
-WORKDIR "/src/ncovid.web"
-RUN dotnet build "ncovid.web.csproj" -c Release -o /app/build
+WORKDIR "/src/ncov.api"
+RUN dotnet build "ncov.api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ncovid.web.csproj" -c Release -o /app/publish
+RUN dotnet publish "ncov.api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ncovid.web.dll"]
+ENTRYPOINT ["dotnet", "ncov.api.dll"]

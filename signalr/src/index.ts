@@ -30,7 +30,7 @@ $("#main_table_countries_today").DataTable(
 "retrieve": true,
  "paging":   false,
         "info":     false,
-		 "order": [[ 1, "desc" ]],
+		 "order": false,
  "columns": [
             { "data": "country" },
             { "data": "cases" },
@@ -42,7 +42,9 @@ $("#main_table_countries_today").DataTable(
             { "data": "critical" },
             { "data": "casesPerOneMillion" },
             { "data": "deathsPerOneMillion" },
-			{ "data": "firstCase" }
+			{ "data": "totalTest" },
+			{ "data": "testPerOneMillion" }
+			
 			
         ]
 });

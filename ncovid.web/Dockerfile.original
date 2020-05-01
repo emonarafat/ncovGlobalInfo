@@ -8,7 +8,6 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["ncovid.web/ncovid.web.csproj", "ncovid.web/"]
-COPY ["NCovid.Service/NCovid.Service.csproj", "NCovid.Service/"]
 RUN dotnet restore "ncovid.web/ncovid.web.csproj"
 COPY . .
 WORKDIR "/src/ncovid.web"
