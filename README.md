@@ -1,6 +1,6 @@
 Global Covid-19 infection status information 
 ------
-![.NET Core](https://github.com/emonarafat/ncovGlobalInfo/workflows/.NET%20Core/badge.svg?branch=master)
+![.NET Core](https://github.com/emonarafat/ncovGlobalInfo/workflows/.NET%20Core/badge.svg?branch=master)![](https://vistr.dev/badge?repo=emonarafat.ncovGlobalInfo)
 
 C#  web scraper for   [worldometers coronavirus](https://www.worldometers.info/coronavirus/ "worldometers coronavirus") 
 
